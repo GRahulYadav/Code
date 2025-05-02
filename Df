@@ -1,0 +1,29 @@
+from collections import defaultdict
+
+def dfs(graph, node, visited):
+    if node not in visited:
+        print(node, end=' ')
+        visited.add(node)
+        for neighbor in graph[node]:
+            dfs(graph, neighbor, visited)
+
+# Input number of nodes and edges
+num_nodes = int(input("Enter number of nodes: "))
+num_edges = int(input("Enter number of edges: "))
+
+# Create graph using adjacency list
+graph = defaultdict(list)
+
+print("Enter edges (e.g., A B for an edge between A and B):")
+for _ in range(num_edges):
+    u, v = input().split()
+    graph[u].append(v)
+    graph[v].append(u)  # Remove if graph is directed
+
+# Choose start node
+start_node = input("Enter starting node for DFS: ")
+
+# Run DFS
+print("\nDFS Traversal:")
+visited = set()
+dfs(graph, start_node, visited)
