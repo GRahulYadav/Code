@@ -1,0 +1,77 @@
+import heapq
+
+class Node:
+    def __init__(self, name, h, t='OR'):
+        self.name = name
+        self.h = h
+        self.t = t  # 'OR' or 'AND'
+        self.c = []  # Children (added later)
+        self.goal = False
+
+    def add(self, child):
+        self.c.append(child)
+
+    def set_goal(self):
+        self.goal = True
+
+    def __repr__(self):
+        return f"{self.name}(h={self.h}, t={self.t})"
+
+def ao_star(start):
+    q = []
+    heapq.heappush(q, (start.h, start))
+    visited = set()
+
+    while q:
+        _, n = heapq.heappop(q)
+        if n.name in visited:
+            continue
+        visited.add(n.name)
+
+        if n.goal:
+            print(f"Reached goal: {n.name}")
+            return n
+
+        for child in n.c:
+            if child.name not in visited:
+                if n.t == 'OR':
+                    heapq.heappush(q, (child.h, child))
+                elif n.t == 'AND':
+                    total_h = sum(c.h for c in n.c)
+                    heapq.heappush(q, (total_h, n))
+
+    return None
+
+# ---- Dynamic Input Section ----
+nodes = {}
+n = int(input("Enter number of nodes: "))
+
+# Step 1: Get all node details
+for _ in range(n):
+    name = input("Node name: ")
+    h = int(input(f"Heuristic value for {name}: "))
+    t = input(f"Type for {name} (OR/AND): ").upper()
+    is_goal = input(f"Is {name} a goal node? (y/n): ").lower() == 'y'
+    nodes[name] = Node(name, h, t)
+    if is_goal:
+        nodes[name].set_goal()
+
+# Step 2: Define children
+for name in nodes:
+    c_names = input(f"Enter children of {name} separated by space (or press enter for none): ").split()
+    for c in c_names:
+        if c in nodes:
+            nodes[name].add(nodes[c])
+
+# Step 3: Define start node
+start_name = input("Enter start node name: ")
+start_node = nodes.get(start_name)
+
+# Run AO* algorithm
+result = ao_star(start_node)
+
+# Output
+if result:
+    print(f"Goal node found: {result.name}")
+else:
+    print("No goal node found.")
