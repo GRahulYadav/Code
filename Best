@@ -1,0 +1,48 @@
+from queue import PriorityQueue
+
+# Best First Search function
+def best_first_search(graph, heuristics, start, goal):
+    visited = set()
+    pq = PriorityQueue()
+    pq.put((heuristics[start], start))  # (heuristic, node)
+
+    print("Best First Search path:")
+    while not pq.empty():
+        _, current = pq.get()
+        if current not in visited:
+            print(current, end=' ')
+            visited.add(current)
+            if current == goal:
+                print("\nGoal reached!")
+                return
+            for neighbor in graph[current]:
+                if neighbor not in visited:
+                    pq.put((heuristics[neighbor], neighbor))
+    print("\nGoal not reachable.")
+
+# Input: Graph
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
+
+# Heuristic values (example: estimated cost to goal node F)
+heuristics = {
+    'A': 5,
+    'B': 4,
+    'C': 3,
+    'D': 6,
+    'E': 2,
+    'F': 0
+}
+
+# Start and goal
+start = 'A'
+goal = 'F'
+
+# Run Best First Search
+best_first_search(graph, heuristics, start, goal)
