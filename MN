@@ -1,0 +1,32 @@
+import math
+
+# Minimax function to find the optimal value
+def minimax(curDepth, nodeIndex, maxTurn, scores, targetDepth):
+    # Base case: if we've reached the target depth, return the score at this node
+    if curDepth == targetDepth:
+        return scores[nodeIndex]
+    
+    # If it's the maximizing player's turn (Max)
+    if maxTurn:
+        # Call minimax recursively for both children and get the maximum value
+        return max(
+            minimax(curDepth + 1, nodeIndex * 2, False, scores, targetDepth),
+            minimax(curDepth + 1, nodeIndex * 2 + 1, False, scores, targetDepth)
+        )
+    # If it's the minimizing player's turn (Min)
+    else:
+        # Call minimax recursively for both children and get the minimum value
+        return min(
+            minimax(curDepth + 1, nodeIndex * 2, True, scores, targetDepth),
+            minimax(curDepth + 1, nodeIndex * 2 + 1, True, scores, targetDepth)
+        )
+
+# Scores at the leaf nodes of the game tree
+scores = [3, 5, 2, 9, 12, 5, 23, 23]
+
+# Calculate the depth of the tree based on the number of leaf nodes (log2(len(scores)))
+treeDepth = math.log(len(scores), 2)
+
+# Calling the minimax function to find the optimal value
+print("The optimal value is: ", end="")
+print(minimax(0, 0, True, scores, int(treeDepth)))
