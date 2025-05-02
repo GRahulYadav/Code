@@ -1,0 +1,49 @@
+import itertools
+
+# Function to calculate the distance between two cities
+def calculate_distance(city1, city2, dist_matrix):
+    return dist_matrix[city1][city2]
+
+# Function to find the shortest possible route using brute force
+def tsp_bruteforce(dist_matrix):
+    n = len(dist_matrix)
+    cities = list(range(n))
+    
+    # Generate all possible permutations of cities
+    min_route = None
+    min_distance = float('inf')
+
+    # Loop through all permutations of cities (except the first one)
+    for perm in itertools.permutations(cities[1:]):
+        # Add the starting city (city 0) to the permutation
+        route = [cities[0]] + list(perm) + [cities[0]]  # returning to the start city
+        
+        # Calculate the total distance of the route
+        total_distance = 0
+        for i in range(n):
+            total_distance += calculate_distance(route[i], route[i+1], dist_matrix)
+        
+        # Update minimum distance and route if a shorter route is found
+        if total_distance < min_distance:
+            min_distance = total_distance
+            min_route = route
+    
+    return min_route, min_distance
+
+# Example distance matrix (symmetric matrix for simplicity)
+# The matrix represents distances between each pair of cities
+# dist_matrix[i][j] is the distance between city i and city j
+dist_matrix = [
+    [0, 10, 15, 20, 25],
+    [10, 0, 35, 25, 30],
+    [15, 35, 0, 30, 5],
+    [20, 25, 30, 0, 15],
+    [25, 30, 5, 15, 0]
+]
+
+# Run the brute force TSP
+route, distance = tsp_bruteforce(dist_matrix)
+
+# Output the result
+print(f"The shortest route is: {route}")
+print(f"The total distance is: {distance}")
